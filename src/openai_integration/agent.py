@@ -7,7 +7,7 @@ import sys
 from pathlib import Path
 
 # Add parent directory to path to import tools
-from ..tools import TOOLS_SCHEMA, execute_function_call
+from tools import TOOLS_SCHEMA, execute_function_call
 from .prompts import get_system_prompt
 
 load_dotenv()
@@ -15,7 +15,7 @@ load_dotenv()
 
 class AppointmentAgent:
     
-    def __init__(self, model: str = "gpt-4o", custom_prompt: Optional[str] = None):
+    def __init__(self, model: str = "gpt-5", custom_prompt: Optional[str] = None):
 
         self.client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
         self.model = model
