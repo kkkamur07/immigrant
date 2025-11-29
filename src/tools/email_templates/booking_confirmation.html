@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+    <div style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); padding: 30px; border-radius: 10px 10px 0 0; text-align: center;">
+        <h1 style="color: white; margin: 0; font-size: 32px;">✅ Confirmed!</h1>
+        <p style="color: white; margin: 10px 0 0 0; font-size: 16px;">Your appointment is booked</p>
+    </div>
+    
+    <div style="background: white; padding: 40px; border: 1px solid #e0e0e0; border-top: none; border-radius: 0 0 10px 10px;">
+        <h2 style="color: #333; margin-top: 0;">Hello {{ recipient_name }},</h2>
+        
+        <div style="background: #d4edda; border: 1px solid #c3e6cb; padding: 20px; border-radius: 5px; text-align: center; margin: 25px 0;">
+            <p style="margin: 0; font-size: 18px; color: #155724; font-weight: 600;">
+                Booking Reference: <span style="font-size: 24px; color: #11998e;">{{ booking_id }}</span>
+            </p>
+        </div>
+        
+        <div style="background: #f8f9fa; border-left: 4px solid #11998e; padding: 20px; margin: 25px 0; border-radius: 5px;">
+            <h3 style="margin-top: 0; color: #11998e; font-size: 18px;">📋 Appointment Details</h3>
+            <table style="width: 100%; border-collapse: collapse;">
+                <tr>
+                    <td style="padding: 8px 0; color: #666; font-weight: 600;">📅 Date:</td>
+                    <td style="padding: 8px 0; color: #333;">{{ readable_date }}</td>
+                </tr>
+                <tr>
+                    <td style="padding: 8px 0; color: #666; font-weight: 600;">🕐 Time:</td>
+                    <td style="padding: 8px 0; color: #333;">{{ readable_time }}</td>
+                </tr>
+                <tr>
+                    <td style="padding: 8px 0; color: #666; font-weight: 600;">📋 Type:</td>
+                    <td style="padding: 8px 0; color: #333;">Emergency Residence Permit</td>
+                </tr>
+                <tr>
+                    <td style="padding: 8px 0; color: #666; font-weight: 600;">📝 Reason:</td>
+                    <td style="padding: 8px 0; color: #333;">{{ reason }}</td>
+                </tr>
+            </table>
+        </div>
+        
+        <div style="background: #e7f3ff; border-left: 4px solid #2196F3; padding: 20px; margin: 25px 0; border-radius: 5px;">
+            <h3 style="margin-top: 0; color: #2196F3; font-size: 18px;">📝 What to Bring</h3>
+            <ul style="margin: 10px 0; padding-left: 20px; color: #555;">
+                <li>Valid passport</li>
+                <li>Current residence permit (if applicable)</li>
+                <li>Proof of residence in Munich</li>
+                <li>Supporting documents for your emergency reason</li>
+                <li>This confirmation email</li>
+            </ul>
+        </div>
+        
+        <div style="background: #fff3cd; border: 1px solid #ffc107; padding: 15px; border-radius: 5px; margin: 25px 0;">
+            <h4 style="margin-top: 0; color: #856404;">📍 Location</h4>
+            <p style="margin: 5px 0; color: #856404; font-weight: 600;">
+                KVR München (Kreisverwaltungsreferat)<br>
+                Ruppertstraße 19<br>
+                80466 München
+            </p>
+            <p style="margin: 15px 0 0 0; color: #856404; font-size: 14px;">
+                ⏰ Please arrive 10 minutes early
+            </p>
+        </div>
+        
+        <hr style="border: none; border-top: 1px solid #e0e0e0; margin: 30px 0;">
+        
+        <p style="font-size: 13px; color: #888; margin: 0;">
+            If you need to cancel or reschedule, please contact us as soon as possible.<br>
+            This is an automated confirmation from KVR Munich Appointment Service.
+        </p>
+    </div>
+</body>
+</html>

@@ -1,0 +1,30 @@
+Hello {{ recipient_name }},
+
+Your appointment is CONFIRMED! ✅
+
+BOOKING REFERENCE: {{ booking_id }}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📅 Date: {{ readable_date }}
+🕐 Time: {{ readable_time }}
+📋 Type: Emergency Residence Permit
+📝 Reason: {{ reason }}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+WHAT TO BRING:
+• Valid passport
+• Current residence permit (if applicable)
+• Proof of residence in Munich
+• Supporting documents for your emergency reason
+• This confirmation email (printed or on your phone)
+
+LOCATION:
+KVR München (Kreisverwaltungsreferat)
+Ruppertstraße 19
+80466 München
+
+Please arrive 10 minutes early.
+
+If you need to cancel or reschedule, please contact us as soon as possible.
+
+Best regards,
+KVR Munich Appointment Service

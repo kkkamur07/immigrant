@@ -1,0 +1,354 @@
+{
+  "appointments": [
+    {
+      "id": "apt_001",
+      "date": "2025-12-02",
+      "time": "09:00",
+      "available": true,
+      "type": "emergency_residence_permit"
+    },
+    {
+      "id": "apt_002",
+      "date": "2025-12-02",
+      "time": "10:30",
+      "available": true,
+      "type": "emergency_residence_permit"
+    },
+    {
+      "id": "apt_003",
+      "date": "2025-12-02",
+      "time": "14:00",
+      "available": true,
+      "type": "emergency_residence_permit"
+    },
+    {
+      "id": "apt_004",
+      "date": "2025-12-02",
+      "time": "15:30",
+      "available": true,
+      "type": "emergency_residence_permit"
+    },
+    {
+      "id": "apt_005",
+      "date": "2025-12-03",
+      "time": "09:00",
+      "available": true,
+      "type": "emergency_residence_permit"
+    },
+    {
+      "id": "apt_006",
+      "date": "2025-12-03",
+      "time": "10:00",
+      "available": true,
+      "type": "emergency_residence_permit"
+    },
+    {
+      "id": "apt_007",
+      "date": "2025-12-03",
+      "time": "11:30",
+      "available": true,
+      "type": "emergency_residence_permit"
+    },
+    {
+      "id": "apt_008",
+      "date": "2025-12-03",
+      "time": "14:30",
+      "available": true,
+      "type": "emergency_residence_permit"
+    },
+    {
+      "id": "apt_009",
+      "date": "2025-12-04",
+      "time": "09:00",
+      "available": true,
+      "type": "emergency_residence_permit"
+    },
+    {
+      "id": "apt_010",
+      "date": "2025-12-04",
+      "time": "11:00",
+      "available": true,
+      "type": "emergency_residence_permit"
+    },
+    {
+      "id": "apt_011",
+      "date": "2025-12-04",
+      "time": "13:30",
+      "available": true,
+      "type": "emergency_residence_permit"
+    },
+    {
+      "id": "apt_012",
+      "date": "2025-12-04",
+      "time": "15:00",
+      "available": true,
+      "type": "emergency_residence_permit"
+    },
+    {
+      "id": "apt_013",
+      "date": "2025-12-05",
+      "time": "09:00",
+      "available": true,
+      "type": "emergency_residence_permit"
+    },
+    {
+      "id": "apt_014",
+      "date": "2025-12-05",
+      "time": "10:30",
+      "available": true,
+      "type": "emergency_residence_permit"
+    },
+    {
+      "id": "apt_015",
+      "date": "2025-12-05",
+      "time": "14:00",
+      "available": true,
+      "type": "emergency_residence_permit"
+    },
+    {
+      "id": "apt_016",
+      "date": "2025-12-05",
+      "time": "15:30",
+      "available": true,
+      "type": "emergency_residence_permit"
+    },
+    {
+      "id": "apt_017",
+      "date": "2025-12-06",
+      "time": "09:00",
+      "available": true,
+      "type": "emergency_residence_permit"
+    },
+    {
+      "id": "apt_018",
+      "date": "2025-12-06",
+      "time": "10:00",
+      "available": true,
+      "type": "emergency_residence_permit"
+    },
+    {
+      "id": "apt_019",
+      "date": "2025-12-06",
+      "time": "14:30",
+      "available": true,
+      "type": "emergency_residence_permit"
+    },
+    {
+      "id": "apt_020",
+      "date": "2025-12-06",
+      "time": "16:00",
+      "available": true,
+      "type": "emergency_residence_permit"
+    },
+    {
+      "id": "apt_021",
+      "date": "2025-12-09",
+      "time": "09:00",
+      "available": true,
+      "type": "emergency_residence_permit"
+    },
+    {
+      "id": "apt_022",
+      "date": "2025-12-09",
+      "time": "11:00",
+      "available": true,
+      "type": "emergency_residence_permit"
+    },
+    {
+      "id": "apt_023",
+      "date": "2025-12-09",
+      "time": "13:30",
+      "available": true,
+      "type": "emergency_residence_permit"
+    },
+    {
+      "id": "apt_024",
+      "date": "2025-12-09",
+      "time": "15:00",
+      "available": true,
+      "type": "emergency_residence_permit"
+    },
+    {
+      "id": "apt_025",
+      "date": "2025-12-10",
+      "time": "09:30",
+      "available": true,
+      "type": "emergency_residence_permit"
+    },
+    {
+      "id": "apt_026",
+      "date": "2025-12-10",
+      "time": "11:00",
+      "available": true,
+      "type": "emergency_residence_permit"
+    },
+    {
+      "id": "apt_027",
+      "date": "2025-12-10",
+      "time": "14:00",
+      "available": true,
+      "type": "emergency_residence_permit"
+    },
+    {
+      "id": "apt_028",
+      "date": "2025-12-10",
+      "time": "15:30",
+      "available": true,
+      "type": "emergency_residence_permit"
+    },
+    {
+      "id": "apt_029",
+      "date": "2025-12-11",
+      "time": "10:00",
+      "available": true,
+      "type": "emergency_residence_permit"
+    },
+    {
+      "id": "apt_030",
+      "date": "2025-12-11",
+      "time": "13:00",
+      "available": true,
+      "type": "emergency_residence_permit"
+    },
+    {
+      "id": "apt_031",
+      "date": "2025-12-11",
+      "time": "15:00",
+      "available": true,
+      "type": "emergency_residence_permit"
+    },
+    {
+      "id": "apt_032",
+      "date": "2025-12-12",
+      "time": "09:00",
+      "available": true,
+      "type": "emergency_residence_permit"
+    },
+    {
+      "id": "apt_033",
+      "date": "2025-12-12",
+      "time": "10:30",
+      "available": true,
+      "type": "emergency_residence_permit"
+    },
+    {
+      "id": "apt_034",
+      "date": "2025-12-12",
+      "time": "14:00",
+      "available": true,
+      "type": "emergency_residence_permit"
+    },
+    {
+      "id": "apt_035",
+      "date": "2025-12-12",
+      "time": "16:00",
+      "available": true,
+      "type": "emergency_residence_permit"
+    }
+  ],
+  "bookings": [],
+  "pending_confirmations": [
+    {
+      "token": "jIQeNLf4UbSYWtxx4D_iU9o7bGxDddEE9YlLKP_7cQE",
+      "appointment_id": "apt_001",
+      "user_data": {
+        "name": "Krrish Agarwalla",
+        "email": "krrishmof07@gmail.com",
+        "reason": "I have to go to India because my mother is really sick, but my visa is expiring"
+      },
+      "appointment_details": {
+        "date": "2025-12-02",
+        "time": "09:00",
+        "type": "emergency_residence_permit"
+      },
+      "created_at": "2025-11-29T16:28:02.548197",
+      "expires_at": "2025-11-29T16:58:02.548197",
+      "status": "pending"
+    },
+    {
+      "token": "88dNYY2aKnA2qIk4MRRS8qMIeP4kQd2TNoONqxVAWFo",
+      "appointment_id": "apt_002",
+      "user_data": {
+        "name": "Test User",
+        "email": "krrishgermant@gmail.com",
+        "reason": "Testing the email system - visa expiring soon"
+      },
+      "appointment_details": {
+        "date": "2025-12-02",
+        "time": "10:30",
+        "type": "emergency_residence_permit"
+      },
+      "created_at": "2025-11-29T16:35:26.181607",
+      "expires_at": "2025-11-29T17:05:26.181607",
+      "status": "pending"
+    },
+    {
+      "token": "drSo789M9qCydYh-_paRAS3hb9j39_xbWaf2iwuYD08",
+      "appointment_id": "apt_002",
+      "user_data": {
+        "name": "Test User",
+        "email": "krrishgermant@gmail.com",
+        "reason": "Testing the email system - visa expiring soon"
+      },
+      "appointment_details": {
+        "date": "2025-12-02",
+        "time": "10:30",
+        "type": "emergency_residence_permit"
+      },
+      "created_at": "2025-11-29T16:38:12.536021",
+      "expires_at": "2025-11-29T17:08:12.536021",
+      "status": "pending"
+    },
+    {
+      "token": "QCoGrSkRV6BbnLX3yjKvK0Un9bU9PXL1gKxzzChiaME",
+      "appointment_id": "apt_002",
+      "user_data": {
+        "name": "Test User",
+        "email": "krrishmof07@gmail.com",
+        "reason": "Testing the email system - visa expiring soon"
+      },
+      "appointment_details": {
+        "date": "2025-12-02",
+        "time": "10:30",
+        "type": "emergency_residence_permit"
+      },
+      "created_at": "2025-11-29T16:38:50.081747",
+      "expires_at": "2025-11-29T17:08:50.081747",
+      "status": "pending"
+    },
+    {
+      "token": "hqQVGtsXPryEf0WCAOQmv3xTb2BzPncqFWiL7ZVer0Q",
+      "appointment_id": "apt_002",
+      "user_data": {
+        "name": "Test User",
+        "email": "krrishmof07@gmail.com",
+        "reason": "Testing the email system - visa expiring soon"
+      },
+      "appointment_details": {
+        "date": "2025-12-02",
+        "time": "10:30",
+        "type": "emergency_residence_permit"
+      },
+      "created_at": "2025-11-29T16:39:28.199918",
+      "expires_at": "2025-11-29T17:09:28.199918",
+      "status": "pending"
+    },
+    {
+      "token": "IzfhhWBmWHeygpK3O279UxoEPLYd-cFUt5k2uP-cwJE",
+      "appointment_id": "apt_001",
+      "user_data": {
+        "name": "Krrish Agarwalla",
+        "email": "krrishmof07@gmail.com",
+        "reason": "Travelling to India urgently due to sick mother"
+      },
+      "appointment_details": {
+        "date": "2025-12-02",
+        "time": "09:00",
+        "type": "emergency_residence_permit"
+      },
+      "created_at": "2025-11-29T16:42:29.197942",
+      "expires_at": "2025-11-29T17:12:29.197942",
+      "status": "pending"
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+Hello {{ recipient_name }},
+
+Your emergency appointment has been reserved!
+
+APPOINTMENT DETAILS:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📅 Date: {{ readable_date }}
+🕐 Time: {{ readable_time }}
+📋 Type: Emergency Residence Permit
+📝 Reason: {{ reason }}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+⚠️ IMPORTANT: You must confirm your appointment within 30 minutes.
+
+Click here to confirm: {{ confirmation_url }}
+
+If you didn't request this appointment, please ignore this email.
+
+Best regards,
+KVR Munich Appointment Service
