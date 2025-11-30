@@ -25,7 +25,6 @@ jinja_env = Environment(loader=FileSystemLoader(TEMPLATE_DIR))
 
 
 def format_datetime_for_email(date_str: str, time_str: str) -> tuple:
-
     date_obj = datetime.strptime(date_str, "%Y-%m-%d")
     readable_date = date_obj.strftime("%B %d, %Y")  
     
@@ -42,7 +41,7 @@ async def send_confirmation_email(
     confirmation_token: str,
     reason: str
 ) -> Dict[str, Any]:
-
+    """Send confirmation email - fully async"""
     try:
         # Format date and time
         readable_date, readable_time = format_datetime_for_email(
@@ -92,6 +91,8 @@ async def send_confirmation_email(
             start_tls=True
         )
         
+        print(f"[EMAIL] Confirmation sent to {recipient_email}")
+        
         return {
             "status": "success",
             "message": "Confirmation email sent successfully",
@@ -99,6 +100,7 @@ async def send_confirmation_email(
         }
         
     except Exception as e:
+        print(f"[EMAIL ERROR] {str(e)}")
         return {
             "status": "error",
             "message": f"Failed to send email: {str(e)}",
@@ -113,7 +115,7 @@ async def send_booking_confirmation_email(
     appointment_details: Dict[str, str],
     reason: str
 ) -> Dict[str, Any]:
-
+    """Send booking confirmation - fully async"""
     try:
         # Format date and time
         readable_date, readable_time = format_datetime_for_email(
@@ -160,6 +162,8 @@ async def send_booking_confirmation_email(
             start_tls=True
         )
         
+        print(f"[EMAIL] Booking confirmation sent to {recipient_email}")
+        
         return {
             "status": "success",
             "message": "Booking confirmation email sent successfully",
@@ -167,17 +171,9 @@ async def send_booking_confirmation_email(
         }
         
     except Exception as e:
+        print(f"[EMAIL ERROR] {str(e)}")
         return {
             "status": "error",
             "message": f"Failed to send email: {str(e)}",
             "recipient": recipient_email
         }
-
-
-# Synchronous wrappers for non-async contexts
-def send_confirmation_email_sync(*args, **kwargs):
-    return asyncio.run(send_confirmation_email(*args, **kwargs))
-
-
-def send_booking_confirmation_email_sync(*args, **kwargs):
-    return asyncio.run(send_booking_confirmation_email(*args, **kwargs))

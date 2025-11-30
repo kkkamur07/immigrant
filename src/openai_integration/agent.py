@@ -1,23 +1,24 @@
+import sys
+import os
+
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 import json
 import os
 from typing import Dict, List, Optional
 from openai import OpenAI
 from dotenv import load_dotenv
-import sys
-from pathlib import Path
 
-# Add parent directory to path to import tools
 from tools import TOOLS_SCHEMA, execute_function_call
 from .prompts import get_system_prompt
 
 load_dotenv()
 
-
 class AppointmentAgent:
-    
-    def __init__(self, model: str = "gpt-5", custom_prompt: Optional[str] = None):
-
+        
+    def __init__(self, model: str = "gpt-4.1-nano", custom_prompt: Optional[str] = None):
         self.client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+        
         self.model = model
         self.conversation_history = []
         self.user_context = {
@@ -27,15 +28,16 @@ class AppointmentAgent:
             "selected_appointment_id": None
         }
         
-        # Initialize conversation with system prompt
         system_prompt = custom_prompt if custom_prompt else get_system_prompt()
         self.conversation_history.append({
             "role": "system",
             "content": system_prompt
         })
     
-    def process_message(self, user_message: str) -> str:
-
+    
+    async def process_message(self, user_message: str) -> str:
+        """Process message - now async to handle async tool calls"""
+        
         self.conversation_history.append({
             "role": "user",
             "content": user_message
@@ -59,7 +61,6 @@ class AppointmentAgent:
             })
             return assistant_message
         
-        # Handle function calls
         self.conversation_history.append(response_message)
         
         for tool_call in tool_calls:
@@ -69,7 +70,7 @@ class AppointmentAgent:
             print(f"[DEBUG] Calling function: {function_name}")
             print(f"[DEBUG] Arguments: {json.dumps(function_args, indent=2)}")
             
-            function_response = execute_function_call(function_name, function_args)
+            function_response = await execute_function_call(function_name, function_args)
             
             print(f"[DEBUG] Function response: {json.dumps(function_response, indent=2)}")
             
@@ -99,15 +100,12 @@ class AppointmentAgent:
         return final_message
     
     def get_user_context(self) -> Dict:
-
         return self.user_context
     
     def get_conversation_history(self) -> List[Dict]:
-
         return self.conversation_history
     
     def reset_conversation(self):
-
         system_message = self.conversation_history[0]
         self.conversation_history = [system_message]
         self.user_context = {
@@ -116,34 +114,29 @@ class AppointmentAgent:
             "reason": None,
             "selected_appointment_id": None
         }
-        
-        print("[INFO] Conversation reset")
     
     def export_conversation(self, filepath: str):
- 
         with open(filepath, 'w') as f:
             json.dump({
                 "conversation": self.conversation_history,
                 "user_context": self.user_context
             }, f, indent=2)
-            
-        print(f"[INFO] Conversation exported to {filepath}")
     
     def update_system_prompt(self, new_prompt: str):
- 
         if self.conversation_history and self.conversation_history[0]["role"] == "system":
             self.conversation_history[0]["content"] = new_prompt
             print("[INFO] System prompt updated")
 
 
-# Standalone function for testing
-def test_agent():
+import asyncio
+
+async def test_agent():
+    """Test function - now async"""
     agent = AppointmentAgent()
     
     print("=== KVR Appointment Agent Test ===")
     print("Type 'quit' to exit, 'reset' to start over\n")
     
-    # Initial greeting
     print("Agent: Hello! This is KVR emergency appointment service. How can I help?\n")
     
     while True:
@@ -168,12 +161,11 @@ def test_agent():
             continue
         
         try:
-            response = agent.process_message(user_input)
+            response = await agent.process_message(user_input)
             print(f"Agent: {response}\n")
-            
         except Exception as e:
             print(f"[ERROR] {str(e)}\n")
 
 
 if __name__ == "__main__":
-    test_agent()
+    asyncio.run(test_agent())

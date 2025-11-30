@@ -1,3 +1,6 @@
+import asyncio
+from typing import Dict, Any
+import json
 from .data_manager import load_data, save_data, get_data_file_path
 
 from .user_info import (
@@ -27,9 +30,8 @@ from .booking import (
 
 from .email_service import (
     send_confirmation_email,
-    send_booking_confirmation_email,
-    send_confirmation_email_sync,
-    send_booking_confirmation_email_sync
+    send_booking_confirmation_email
+    # ✅ Removed sync wrappers
 )
 
 from .schemas import (
@@ -43,15 +45,23 @@ AVAILABLE_FUNCTIONS = {
     "collect_user_info": collect_user_info,
     "check_availability": check_availability,
     "reserve_slot_temporarily": reserve_slot_temporarily,
+    "book_appointment": book_appointment,
+    "cancel_booking": cancel_booking,
+    "send_confirmation_email": send_confirmation_email,
+    "send_booking_confirmation_email": send_booking_confirmation_email,
 }
 
 
-def get_function_by_name(function_name: str):
+async def get_function_by_name(function_name: str):
+    """Get function by name - now async"""
     return AVAILABLE_FUNCTIONS.get(function_name)
 
 
-def execute_function_call(function_name: str, arguments: dict):
-    function = get_function_by_name(function_name)
+async def execute_function_call(function_name: str, arguments: Dict[str, Any]) -> Dict[str, Any]:
+    """
+    Execute function calls - handles both sync and async functions automatically
+    """
+    function = AVAILABLE_FUNCTIONS.get(function_name)
     
     if not function:
         return {
@@ -60,9 +70,19 @@ def execute_function_call(function_name: str, arguments: dict):
         }
     
     try:
-        result = function(**arguments)
+        # Handle both sync and async functions
+        if asyncio.iscoroutinefunction(function):
+            result = await function(**arguments)
+        else:
+            result = function(**arguments)
+        
         return result
+        
     except Exception as e:
+        print(f"[ERROR] Function execution failed: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        
         return {
             "status": "error",
             "message": f"Error executing function: {str(e)}",
@@ -98,11 +118,9 @@ __all__ = [
     "cancel_booking",
     "cleanup_expired_confirmations",
     
-    # Email
+    # Email (async only)
     "send_confirmation_email",
     "send_booking_confirmation_email",
-    "send_confirmation_email_sync",
-    "send_booking_confirmation_email_sync",
     
     # Schemas
     "TOOLS_SCHEMA",

@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Voice Assistant</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 {
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .status {
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: center;
+            font-weight: bold;
+        }
+        .status.disconnected { background: #fee; color: #c00; }
+        .status.connected { background: #efe; color: #0a0; }
+        .status.listening { background: #fef6e0; color: #d97706; }
+        .status.processing { background: #e0f2fe; color: #0369a1; }
+        .status.speaking { background: #fce7f3; color: #be185d; }
+        
+        button {
+            width: 100%;
+            padding: 20px;
+            font-size: 18px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            margin: 10px 0;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+        button.start {
+            background: #10b981;
+            color: white;
+        }
+        button.start:hover {
+            background: #059669;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(16,185,129,0.3);
+        }
+        button.stop {
+            background: #ef4444;
+            color: white;
+        }
+        button.stop:hover {
+            background: #dc2626;
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .conversation {
+            margin-top: 30px;
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 20px;
+            background: #f9fafb;
+        }
+        .message {
+            margin: 15px 0;
+            padding: 12px 16px;
+            border-radius: 8px;
+            line-height: 1.5;
+        }
+        .message.user {
+            background: #dbeafe;
+            border-left: 4px solid #3b82f6;
+        }
+        .message.assistant {
+            background: #f3e8ff;
+            border-left: 4px solid #a855f7;
+        }
+        .message strong {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+        
+        .info {
+            background: #f0f9ff;
+            border: 1px solid #bae6fd;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+            color: #0c4a6e;
+        }
+        .mic-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .mic-indicator.active {
+            background: #10b981;
+            animation: pulse 1.5s infinite;
+        }
+        .mic-indicator.inactive {
+            background: #ef4444;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎙️ Voice Assistant</h1>
+        
+        <div class="info">
+            💡 <strong>Tip:</strong> Speak naturally. Press Space to manually trigger when done speaking.
+        </div>
+        
+        <div id="status" class="status disconnected">
+            <span class="mic-indicator inactive"></span>
+            Disconnected
+        </div>
+        
+        <button id="startBtn" class="start" onclick="startConversation()">
+            🎤 Start Conversation
+        </button>
+        <button id="stopBtn" class="stop" onclick="stopConversation()" style="display:none;">
+            ⏹️ Stop Conversation
+        </button>
+        
+        <div class="conversation" id="conversation">
+            <div class="message assistant">
+                <strong>Assistant</strong>
+                Welcome! I'm ready to help you schedule an emergency appointment at KVR office.
+            </div>
+        </div>
+    </div>
+
+    <script>
+    let ws = null;
+    let recognition = null;
+    let audioContext = null;
+    let audioQueue = [];
+    let isPlaying = false;
+    let canListen = true;  // Flag to control when to process speech
+    let silenceTimer = null;
+    let isRecognizing = false;
+    
+    if ('webkitSpeechRecognition' in window) {
+        recognition = new webkitSpeechRecognition();
+        recognition.continuous = false;  // Use false to control manually
+        recognition.interimResults = true;  // Get interim results
+        recognition.lang = 'en-US';
+        
+        recognition.onstart = () => {
+            isRecognizing = true;
+            console.log('[MIC] Recognition started');
+            updateStatus('listening', 'Listening...');
+        };
+        
+        recognition.onresult = (event) => {
+            const result = event.results[event.resultIndex];
+            const transcript = result[0].transcript.trim();
+            const isFinal = result.isFinal;
+            
+            // Clear silence timer on any speech
+            if (silenceTimer) {
+                clearTimeout(silenceTimer);
+                silenceTimer = null;
+            }
+            
+            if (isFinal && transcript.length > 2) {
+                console.log('[MIC] Final transcript:', transcript);
+                
+                // Only process if we should be listening
+                if (canListen) {
+                    addMessage('user', transcript);
+                    canListen = false;  // Stop processing until response
+                    
+                    if (ws && ws.readyState === WebSocket.OPEN) {
+                        updateStatus('processing', 'Processing...');
+                        ws.send(JSON.stringify({
+                            type: 'user_message',
+                            text: transcript
+                        }));
+                    }
+                } else {
+                    // Restart recognition if we're not ready yet
+                    setTimeout(() => tryStartRecognition(), 300);
+                }
+            } else if (!isFinal) {
+                // On interim results, set a silence timer
+                silenceTimer = setTimeout(() => {
+                    // If no speech for 1.5 seconds, restart
+                    console.log('[MIC] Silence detected, ready for next input');
+                    tryStartRecognition();
+                }, 1500);
+            }
+        };
+        
+        recognition.onerror = (event) => {
+            console.error('[MIC] Error:', event.error);
+            isRecognizing = false;
+            
+            if (event.error === 'not-allowed') {
+                alert('Microphone permission denied');
+                stopConversation();
+            } else if (event.error !== 'no-speech' && event.error !== 'aborted') {
+                // Restart on errors except no-speech
+                setTimeout(() => tryStartRecognition(), 500);
+            }
+        };
+        
+        recognition.onend = () => {
+            isRecognizing = false;
+            console.log('[MIC] Recognition ended');
+            
+            // Auto-restart if connected and allowed
+            if (ws && ws.readyState === WebSocket.OPEN && canListen) {
+                setTimeout(() => tryStartRecognition(), 200);
+            }
+        };
+    } else {
+        alert('Speech recognition not supported. Use Chrome.');
+    }
+    
+    function tryStartRecognition() {
+        if (!ws || ws.readyState !== WebSocket.OPEN || !canListen || isRecognizing || isPlaying) {
+            return;
+        }
+        
+        try {
+            recognition.start();
+        } catch (e) {
+            if (e.message.includes('already started')) {
+                console.log('[MIC] Already started, ignoring');
+            } else {
+                console.error('[MIC] Start error:', e);
+            }
+        }
+    }
+    
+    // Allow manual trigger with spacebar
+    document.addEventListener('keydown', (e) => {
+        if (e.code === 'Space' && ws && ws.readyState === WebSocket.OPEN) {
+            e.preventDefault();
+            if (isRecognizing) {
+                recognition.stop();
+            }
+        }
+    });
+    
+    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    
+    async function playAudioChunk(audioData) {
+        const audioBuffer = await audioContext.decodeAudioData(audioData);
+        const source = audioContext.createBufferSource();
+        source.buffer = audioBuffer;
+        source.connect(audioContext.destination);
+        
+        return new Promise((resolve) => {
+            source.onended = resolve;
+            source.start();
+        });
+    }
+    
+    async function processAudioQueue() {
+        if (isPlaying || audioQueue.length === 0) return;
+        
+        isPlaying = true;
+        updateStatus('speaking', 'Assistant speaking...');
+        
+        while (audioQueue.length > 0) {
+            const audioData = audioQueue.shift();
+            await playAudioChunk(audioData);
+        }
+        
+        isPlaying = false;
+        
+        // Resume listening after speaking
+        setTimeout(() => {
+            canListen = true;
+            updateStatus('listening', 'Listening...');
+            tryStartRecognition();
+        }, 800);
+    }
+    
+    function startConversation() {
+        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        ws = new WebSocket(`${protocol}//${window.location.host}/websocket`);
+        ws.binaryType = 'arraybuffer';
+        
+        ws.onopen = () => {
+            console.log('[WS] Connected');
+            updateStatus('connected', 'Connected');
+            
+            document.getElementById('startBtn').style.display = 'none';
+            document.getElementById('stopBtn').style.display = 'block';
+            
+            canListen = true;
+            setTimeout(() => tryStartRecognition(), 500);
+        };
+        
+        ws.onmessage = async (event) => {
+            if (event.data instanceof ArrayBuffer) {
+                audioQueue.push(event.data);
+                processAudioQueue();
+            } else {
+                const data = JSON.parse(event.data);
+                if (data.type === 'assistant_message') {
+                    addMessage('assistant', data.text);
+                }
+            }
+        };
+        
+        ws.onerror = (error) => {
+            console.error('[WS] Error:', error);
+            updateStatus('disconnected', 'Connection error');
+        };
+        
+        ws.onclose = () => {
+            console.log('[WS] Closed');
+            stopConversation();
+        };
+    }
+    
+    function stopConversation() {
+        canListen = false;
+        
+        if (recognition && isRecognizing) {
+            recognition.stop();
+        }
+        
+        if (ws) {
+            ws.close();
+            ws = null;
+        }
+        
+        if (silenceTimer) {
+            clearTimeout(silenceTimer);
+            silenceTimer = null;
+        }
+        
+        audioQueue = [];
+        isPlaying = false;
+        isRecognizing = false;
+        
+        updateStatus('disconnected', 'Disconnected');
+        document.getElementById('startBtn').style.display = 'block';
+        document.getElementById('stopBtn').style.display = 'none';
+    }
+    
+    function updateStatus(className, text) {
+        const statusEl = document.getElementById('status');
+        const indicator = statusEl.querySelector('.mic-indicator');
+        indicator.className = 'mic-indicator ' + (className === 'listening' ? 'active' : 'inactive');
+        statusEl.className = 'status ' + className;
+        statusEl.innerHTML = '';
+        statusEl.appendChild(indicator);
+        statusEl.appendChild(document.createTextNode(text));
+    }
+    
+    function addMessage(role, text) {
+        const conv = document.getElementById('conversation');
+        const msgDiv = document.createElement('div');
+        msgDiv.className = 'message ' + role;
+        msgDiv.innerHTML = `<strong>${role === 'user' ? 'You' : 'Assistant'}</strong>${text}`;
+        conv.appendChild(msgDiv);
+        conv.scrollTop = conv.scrollHeight;
+    }
+</script>
+
+</body>
+</html>

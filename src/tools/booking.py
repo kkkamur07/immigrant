@@ -1,17 +1,21 @@
 import secrets
+import time
 from typing import Dict, Any
 from datetime import datetime, timedelta
 from .data_manager import load_data, save_data
 from .user_info import validate_user_data
 from .availability import get_appointment_by_id
-from .email_service import send_confirmation_email_sync, send_booking_confirmation_email_sync
+from .email_service import (
+    send_confirmation_email,
+    send_booking_confirmation_email,
+)
 
 
-def reserve_slot_temporarily(
+async def reserve_slot_temporarily(
     appointment_id: str, 
     user_data: Dict[str, str]
 ) -> Dict[str, Any]:
-
+    
     data = load_data()
     
     validation = validate_user_data(user_data)
@@ -42,12 +46,10 @@ def reserve_slot_temporarily(
             "appointment_id": appointment_id
         }
     
-    # Generate secure confirmation token
     token = secrets.token_urlsafe(32)
     created_at = datetime.now()
     expires_at = created_at + timedelta(minutes=30)
     
-    # Create pending confirmation record
     pending_confirmation = {
         "token": token,
         "appointment_id": appointment_id,
@@ -69,8 +71,7 @@ def reserve_slot_temporarily(
     data["pending_confirmations"].append(pending_confirmation)
     save_data(data)
     
-    # Send confirmation email
-    email_result = send_confirmation_email_sync(
+    email_result = await send_confirmation_email(
         recipient_email=user_data["email"],
         recipient_name=user_data["name"],
         appointment_details={
@@ -82,7 +83,7 @@ def reserve_slot_temporarily(
         reason=user_data["reason"]
     )
     
-    print(email_result)
+    print(f"[BOOKING] Email result: {email_result}")
     
     return {
         "status": "success",
@@ -97,12 +98,11 @@ def reserve_slot_temporarily(
         "user_email": user_data["email"],
         "expires_in_minutes": 30,
         "expires_at": expires_at.isoformat(),
-        "email_sent": email_result["status"] == "success"
+        "email_sent": email_result["status"] == "success" 
     }
 
 
-def book_appointment(token: str) -> Dict[str, Any]:
-
+async def book_appointment(token: str) -> Dict[str, Any]:
     data = load_data()
     
     # Find the pending confirmation
@@ -168,8 +168,8 @@ def book_appointment(token: str) -> Dict[str, Any]:
     
     save_data(data)
     
-    # Send final booking confirmation email
-    email_result = send_booking_confirmation_email_sync(
+    # ✅ AWAIT the booking confirmation email
+    email_result = await send_booking_confirmation_email(
         recipient_email=pending["user_data"]["email"],
         recipient_name=pending["user_data"]["name"],
         booking_id=booking_id,
@@ -186,7 +186,6 @@ def book_appointment(token: str) -> Dict[str, Any]:
 
 
 def get_pending_confirmation(token: str) -> Dict[str, Any]:
-
     data = load_data()
     
     for conf in data["pending_confirmations"]:
@@ -197,7 +196,6 @@ def get_pending_confirmation(token: str) -> Dict[str, Any]:
 
 
 def get_booking_by_id(booking_id: str) -> Dict[str, Any]:
-
     data = load_data()
     
     for booking in data["bookings"]:
@@ -207,8 +205,7 @@ def get_booking_by_id(booking_id: str) -> Dict[str, Any]:
     return None
 
 
-def cancel_booking(booking_id: str) -> Dict[str, Any]:
-
+async def cancel_booking(booking_id: str) -> Dict[str, Any]:
     data = load_data()
     
     booking = None
@@ -225,13 +222,11 @@ def cancel_booking(booking_id: str) -> Dict[str, Any]:
             "message": "Booking not found or already cancelled"
         }
     
-    # Mark appointment as available again
     for apt in data["appointments"]:
         if apt["id"] == booking["appointment_id"]:
             apt["available"] = True
             break
     
-    # Update booking status
     data["bookings"][booking_index]["status"] = "cancelled"
     data["bookings"][booking_index]["cancelled_at"] = datetime.now().isoformat()
     
@@ -245,7 +240,6 @@ def cancel_booking(booking_id: str) -> Dict[str, Any]:
 
 
 def cleanup_expired_confirmations() -> int:
-
     data = load_data()
     now = datetime.now()
     cleaned_count = 0
