@@ -16,7 +16,7 @@ load_dotenv()
 
 class AppointmentAgent:
         
-    def __init__(self, model: str = "gpt-4.1-nano", custom_prompt: Optional[str] = None):
+    def __init__(self, model: str = "gpt-4o", custom_prompt: Optional[str] = None):
         self.client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
         
         self.model = model
