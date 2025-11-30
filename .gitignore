@@ -5,6 +5,9 @@ build/
 dist/
 wheels/
 *.egg-info
-
+.env
+/Users/krishuagarwal/Desktop/Programming/python/immigrant/.env
+.env
 # Virtual environments
 .venv
+.env
